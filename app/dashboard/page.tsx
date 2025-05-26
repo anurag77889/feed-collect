@@ -5,6 +5,7 @@ import React from "react";
 import LogoutButton from "../_components/LogoutButton";
 import useSWR from "swr";
 import AddFeedbackButton from "../_components/AddFeedbackButton";
+import FeedbackList from "../_components/FeedbackList";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -28,6 +29,9 @@ function DashboardPage() {
         <div className="flex flex-row justify-between">
           <AddFeedbackButton />
           <LogoutButton />
+        </div>
+        <div className="mt-4">
+          <FeedbackList />
         </div>
       </div>
     </div>
