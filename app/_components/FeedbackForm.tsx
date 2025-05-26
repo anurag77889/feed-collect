@@ -2,6 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 import { z } from "zod";
 
@@ -23,8 +24,26 @@ function FeedbackForm() {
   });
 
   const onSubmit = async (data: FeedbackFormData) => {
-    console.log("Submitting Feedback: ", data);
-    reset();
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Error submitting feedback: ", errorData);
+        toast("Failed to submit feedback");
+        return;
+      }
+      toast("Feedback submitted!");
+      reset();
+    } catch (error) {
+      console.error("Error: ", error);
+      toast("Something went wrong");
+    }
   };
   return (
     <>

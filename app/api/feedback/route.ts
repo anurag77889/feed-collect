@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authConfig } from "../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
+import { error } from "console";
 
 
 const feedbackSchema = z.object({
@@ -41,6 +42,17 @@ export async function POST(req: Request){
     return NextResponse.json({success: true, feedback})
 }
 
-export function GET(){
-    return NextResponse.json({feedbacks});
+export async function GET(req: Request){
+    const session = await getServerSession(authConfig);
+    if(!session){
+        return NextResponse.json({error: "Unauthorized"}, {status: 401});
+    }
+
+    const userEmail = session.user?.email;
+
+    const userFeedbacks = feedbacks.filter(
+        (fb) => fb.email === userEmail
+    );
+
+    return NextResponse.json({feedbacks: userFeedbacks});
 }
