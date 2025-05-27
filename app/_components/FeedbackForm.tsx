@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -57,7 +57,7 @@ function FeedbackForm() {
             </label>
             <input
               {...register("name")}
-              className="border p-3 w-full rounded border-black placeholder:text-black"
+              className="border p-3 text-black w-full rounded border-black placeholder:text-black"
               placeholder="Enter your cute name 🥰"
             />
             {errors.name && (
@@ -70,7 +70,7 @@ function FeedbackForm() {
             </label>
             <textarea
               {...register("feedback")}
-              className="border p-3 w-full rounded border-black placeholder:text-black "
+              className="border p-3 text-black w-full rounded border-black placeholder:text-black "
               placeholder="Enter your valuable words for me 😅"
             />
             {errors.feedback && (
