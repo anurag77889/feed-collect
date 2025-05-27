@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authConfig } from "../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
-import { error } from "console";
+
 
 
 const feedbackSchema = z.object({
@@ -10,7 +10,7 @@ const feedbackSchema = z.object({
     feedback: z.string().min(10),
 });
 
-let feedbacks: {
+const feedbacks: {
     name: string;
     feedback: string;
     email: string;
@@ -42,7 +42,7 @@ export async function POST(req: Request){
     return NextResponse.json({success: true, feedback})
 }
 
-export async function GET(req: Request){
+export async function GET(){
     const session = await getServerSession(authConfig);
     if(!session){
         return NextResponse.json({error: "Unauthorized"}, {status: 401});
