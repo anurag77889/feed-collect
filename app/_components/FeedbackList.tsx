@@ -13,10 +13,12 @@ function FeedbackList() {
   return (
     <div className="mt-6">
       <div className="flex justify-between">
-        <h2 className="text-xl font-semibold mb-2">List of Feedbacks: </h2>
+        <h2 className="text-xl font-mono font-semibold mb-2">
+          List of Feedbacks:{" "}
+        </h2>
         <button
           onClick={() => mutate()}
-          className="mb-4 bg-black px-4 py-2 rounded"
+          className="mb-4 bg-black font-mono text-amber-300 cursor-pointer rounded-3xl px-4 py-2"
         >
           🔄 Refresh
         </button>
@@ -24,11 +26,17 @@ function FeedbackList() {
       <ul className="space-y-4">
         {data.feedbacks.map((fb: any, i: number) => (
           <li key={i} className="border rounded p-3">
-            <p className="font-semibold">{fb.name}</p>
-            <p>{fb.feedback}</p>
-            <p className="text-xs text-gray-500 mt-1">
-              {new Date(fb.date).toLocaleString()}
-            </p>
+            <div className="flex flex-row justify-between items-center">
+              <div>
+                <p className="font-semibold font-mono text-xl">{fb.name}</p>
+                <p className="font-mono text-md">{fb.feedback}</p>
+              </div>
+              <div>
+                <p className="text-lg font-mono text-black mt-1">
+                  {new Date(fb.date).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
           </li>
         ))}
       </ul>

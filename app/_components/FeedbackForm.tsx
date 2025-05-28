@@ -48,46 +48,50 @@ function FeedbackForm() {
     }
   };
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="border-2 p-15 rounded-lg bg-white">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
-          <div className="flex flex-col gap-3">
-            <label className="block font-semibold text-2xl text-black">
-              Name
-            </label>
-            <input
-              {...register("name")}
-              className="border p-3 text-black w-full rounded border-black placeholder:text-black"
-              placeholder="Enter your cute name 🥰"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col gap-3">
-            <label className="block font-semibold text-2xl text-black">
-              Feedback
-            </label>
-            <textarea
-              {...register("feedback")}
-              className="border p-3 text-black w-full rounded border-black placeholder:text-black "
-              placeholder="Enter your valuable words for me 😅"
-            />
-            {errors.feedback && (
-              <p className="text-red-500 text-sm">{errors.feedback.message}</p>
-            )}
-          </div>
-          <div className="flex justify-between">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-blue-600 shadow-lg text-white px-4 py-2 rounded cursor-pointer"
-            >
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </button>
-            <Back2Dashboard />
-          </div>
-        </form>
+    <div className="bg-amber-300 min-w-screen">
+      <div className="min-h-screen flex justify-center items-center">
+        <div className="p-15 rounded-lg bg-black">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
+            <div className="flex flex-col gap-3">
+              <label className="block font-mono font-semibold text-2xl text-amber-300">
+                Name
+              </label>
+              <input
+                {...register("name")}
+                className="border p-3 text-white w-full rounded border-white font-mono placeholder:text-white"
+                placeholder="Enter your cute name 🥰"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name.message}</p>
+              )}
+            </div>
+            <div className="flex flex-col gap-3">
+              <label className="block font-semibold font-mono text-2xl text-amber-300">
+                Feedback
+              </label>
+              <textarea
+                {...register("feedback")}
+                className="border p-3 font-mono text-white w-full rounded border-white placeholder:text-white placeholder:font-mono"
+                placeholder="Enter your valuable words for me 😅"
+              />
+              {errors.feedback && (
+                <p className="text-red-500 text-sm">
+                  {errors.feedback.message}
+                </p>
+              )}
+            </div>
+            <div className="flex justify-between">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-black border-2 border-amber-300 shadow-lg text-white font-mono px-4 py-2 rounded cursor-pointer hover:bg-amber-300 hover:text-black hover:border-amber-300 hover:scale-[90%]"
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+              <Back2Dashboard />
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
