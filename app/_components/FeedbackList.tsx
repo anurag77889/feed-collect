@@ -6,7 +6,12 @@ import useSWR from "swr";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 function FeedbackList() {
-  const { data, error, isLoading, mutate } = useSWR("/api/feedback", fetcher);
+  const {
+    data: feedbacks,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR("/api/feedback", fetcher);
 
   if (isLoading) return <p>Loading feedbacks....</p>;
   if (error) return <p>Error loading feedbacks.</p>;
@@ -24,7 +29,7 @@ function FeedbackList() {
         </button>
       </div>
       <ul className="space-y-4">
-        {data.feedbacks.map((fb: any, i: number) => (
+        {feedbacks.map((fb: any, i: number) => (
           <li key={i} className="border rounded p-3">
             <div className="flex flex-row justify-between items-center">
               <div>
@@ -33,7 +38,7 @@ function FeedbackList() {
               </div>
               <div>
                 <p className="text-lg font-mono text-black mt-1">
-                  {new Date(fb.date).toLocaleDateString()}
+                  {new Date(fb.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </div>

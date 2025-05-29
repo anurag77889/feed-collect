@@ -1,32 +1,12 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 
 
-const uri = process.env.MONGODB_URI as string;
-const options = {};
+const MONGODB_URL = process.env.MONGODB_URI;
 
-let client;
-let clientPromise: Promise<MongoClient>;
-
-declare global {
-    // eslint-disable-next-line no-var
-    var _mongoClientPromise: Promise<MongoClient> | undefined;
-}
-
-if(!process.env.MONGODB_URI){
-    throw new Error("Please add your Mongo URI to .env.local")
-}
-
-if(process.env.NODE_ENV === 'development'){
-    // In development mode, use a global variable so the value is preserved
-    if(!global._mongoClientPromise){
-        client = new MongoClient(uri, options);
-        global._mongoClientPromise = client.connect();
+export const connectDB = async() => {
+    if (mongoose.connection.readyState === 1) return;
+    if (!MONGODB_URL) {
+        throw new Error("MONGODB_URI environment variable is not defined");
     }
-    clientPromise = global._mongoClientPromise;
-} else{
-    // In production, create a new client for every call
-    client = new MongoClient(uri, options);
-    clientPromise = client.connect();
+    return mongoose.connect(MONGODB_URL);
 }
-
-export default clientPromise;
