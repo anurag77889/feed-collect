@@ -1,58 +1,44 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import { z } from "zod";
 import { authOptions } from "@/lib/authOptions";
-import { NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb";
 
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === "POST") {
+    const session = await getServerSession(req, res, authOptions);
+    if (!session) return res.status(401).json({ message: "Unauthorized" });
 
-
-const feedbackSchema = z.object({
-    name: z.string().min(3),
-    feedback: z.string().min(10),
-});
-
-const feedbacks: {
-    name: string;
-    feedback: string;
-    email: string;
-    date: string;
-}[] = [];
-
-export async function POST(req: Request){
-    const session = await getServerSession(authOptions);
-
-    if(!session){
-        return NextResponse.json({error: "Unauthorized"}, {status: 401})
-    }
-
-    const body = await req.json();
-
-    const result = feedbackSchema.safeParse(body);
-    if(!result.success){
-        return NextResponse.json({error: "Invalid data", details: result.error.format()}, {status: 400})
-    }
-
+    const { title, message } = req.body;
     const feedback = {
-        ...result.data,
-        email: session?.user?.email || "unknown",
-        date: new Date().toISOString(),
-    }
+      title,
+      message,
+      email: session.user?.email,
+      createdAt: new Date(),
+    };
 
-    feedbacks.push(feedback);
+    const client = await clientPromise;
+    const db = client.db("feedback-app");
+    await db.collection("feedbacks").insertOne(feedback);
 
-    return NextResponse.json({success: true, feedback})
+    res.status(200).json({ message: "Feedback submitted", feedback });
+  }
+  if (req.method === "GET") {
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) return res.status(401).json({ message: "Unauthorized" });
+
+  const client = await clientPromise;
+  const db = client.db("feedback-app");
+
+  const feedbacks = await db
+    .collection("feedbacks")
+    .find({ email: session.user?.email })
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  res.status(200).json(feedbacks);
+}else {
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
 }
 
-export async function GET(){
-    const session = await getServerSession(authOptions);
-    if(!session){
-        return NextResponse.json({error: "Unauthorized"}, {status: 401});
-    }
-
-    const userEmail = session.user?.email;
-
-    const userFeedbacks = feedbacks.filter(
-        (fb) => fb.email === userEmail
-    );
-
-    return NextResponse.json({feedbacks: userFeedbacks});
-}
